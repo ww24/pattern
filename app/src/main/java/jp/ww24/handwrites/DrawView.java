@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.SurfaceTexture;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.TextureView;
 import android.widget.Toast;
@@ -33,13 +34,12 @@ public class DrawView extends TextureView implements TextureView.SurfaceTextureL
         setFocusable(true);
         setBackgroundColor(Color.WHITE);
         setSurfaceTextureListener(this);
-
-        Toast.makeText(this.getContext(), "create", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
         if (mPath == null) {
+            mPath = new Path();
             mPaint = new Paint();
             // 線の色を指定
             mPaint.setColor(Color.BLACK);
@@ -51,7 +51,6 @@ public class DrawView extends TextureView implements TextureView.SurfaceTextureL
             mPaint.setStrokeJoin(Paint.Join.ROUND);
             // 線の端を丸く
             mPaint.setStrokeCap(Paint.Cap.ROUND);
-            mPath = new Path();
         } else {
             // 復帰時の再描画
             Canvas canvas = lockCanvas();
@@ -103,5 +102,15 @@ public class DrawView extends TextureView implements TextureView.SurfaceTextureL
         }
 
         return true;
+    }
+
+    public void clear() {
+        mPath = new Path();
+
+        Canvas canvas = lockCanvas();
+        if (canvas != null) {
+            canvas.drawColor(Color.WHITE);
+            unlockCanvasAndPost(canvas);
+        }
     }
 }

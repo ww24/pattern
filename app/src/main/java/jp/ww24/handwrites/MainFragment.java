@@ -25,6 +25,11 @@ import java.util.Locale;
 public class MainFragment extends Fragment {
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.content_main, null);
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -52,11 +57,6 @@ public class MainFragment extends Fragment {
                 Toast.makeText(activity, "Saved.", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.content_main, null);
     }
 
     public void saveBitmapImage(Bitmap bitmap) throws FileNotFoundException {

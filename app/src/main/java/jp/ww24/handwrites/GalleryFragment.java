@@ -1,19 +1,22 @@
 package jp.ww24.handwrites;
 
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.Debug;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -33,14 +36,50 @@ public class GalleryFragment extends Fragment {
 
         final Activity activity = getActivity();
 
-        ListView listView = (ListView) activity.findViewById(R.id.listView);
-        FileAdapter fileAdapter = new FileAdapter(activity);
+        FileItemAdapter fileItemAdapter = new FileItemAdapter(activity);
 
+        // キャッシュディレクトリからファイル一覧取得
         File dir = activity.getCacheDir();
+        // TODO: 再帰的に読み込む
         ArrayList<File> fileList = new ArrayList<>(Arrays.asList(dir.listFiles()));
-        fileAdapter.setFileList(fileList);
+        ArrayList<FileItem> fileItemList = new ArrayList<>();
 
-        listView.setAdapter(fileAdapter);
+        Log.d("size", String.valueOf(fileList.size()));
+
+        ContentResolver contentResolver = getContext().getContentResolver();
+        for (File file: fileList) {
+            if (! file.isFile()) {
+                continue;
+            }
+
+            Uri uri = Uri.fromFile(file);
+
+            try {
+                InputStream inputStream = contentResolver.openInputStream(uri);
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inJustDecodeBounds = true;
+                BitmapFactory.decodeStream(inputStream, null, options);
+
+                String mimeType = options.outMimeType;
+                if (mimeType == null || ! mimeType.split("/")[0].equals("image")) {
+                    Log.d("DEBUG", "Invalid MIME Type: " + options.outMimeType);
+                }
+
+                FileItem fileItem = new FileItem(file, contentResolver);
+                fileItemList.add(fileItem);
+            } catch (Exception e) {
+                e.printStackTrace();
+                continue;
+            }
+        }
+
+        Log.d("image file size", String.valueOf(fileItemList.size()));
+        fileItemAdapter.setFileList(fileItemList);
+
+        // ListView へ反映
+        ListView listView = (ListView) activity.findViewById(R.id.listView);
+        listView.setAdapter(fileItemAdapter);
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

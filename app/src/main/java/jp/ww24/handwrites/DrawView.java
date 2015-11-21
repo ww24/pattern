@@ -7,10 +7,8 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.SurfaceTexture;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.TextureView;
-import android.widget.Toast;
 
 /**
  * Created by ww24 on 2015/11/05.

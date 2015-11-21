@@ -19,14 +19,19 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import jp.ww24.handwrites.databinding.ContentMainBinding;
+
 /**
  * Created by ww24 on 2015/11/06.
  */
 public class MainFragment extends Fragment {
 
+    private ContentMainBinding binding;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.content_main, null);
+        binding = ContentMainBinding.inflate(inflater);
+        return binding.getRoot();
     }
 
     @Override
@@ -37,11 +42,11 @@ public class MainFragment extends Fragment {
         final Activity activity = getActivity();
 
         // FloatingActionButton
-        FloatingActionButton fab = (FloatingActionButton) activity.findViewById(R.id.fab);
+        FloatingActionButton fab = binding.fab;
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DrawView drawView = (DrawView) activity.findViewById(R.id.draw_view);
+                DrawView drawView = binding.drawView;
                 drawView.clear();
 
                 try {

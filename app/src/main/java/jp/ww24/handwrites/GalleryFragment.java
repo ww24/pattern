@@ -2,6 +2,8 @@ package jp.ww24.handwrites;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.databinding.BindingAdapter;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -19,14 +22,23 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import jp.ww24.handwrites.databinding.ContentGalleryBinding;
+
 /**
  * Created by ww24 on 2015/11/06.
  */
 public class GalleryFragment extends Fragment {
 
+    private ContentGalleryBinding binding;
+
+    public String message;
+    public ArrayList<FileItem> files;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.content_gallery, null);
+        binding = ContentGalleryBinding.inflate(inflater);
+        binding.setGallery(this);
+        return binding.getRoot();
     }
 
     @Override
@@ -35,15 +47,11 @@ public class GalleryFragment extends Fragment {
 
         final Activity activity = getActivity();
 
-        FileItemAdapter fileItemAdapter = new FileItemAdapter(activity);
-
         // キャッシュディレクトリからファイル一覧取得
         File dir = activity.getCacheDir();
         // TODO: 再帰的に読み込む
         ArrayList<File> fileList = new ArrayList<>(Arrays.asList(dir.listFiles()));
         ArrayList<FileItem> fileItemList = new ArrayList<>();
-
-        Log.d("size", String.valueOf(fileList.size()));
 
         ContentResolver contentResolver = getContext().getContentResolver();
         for (File file: fileList) {
@@ -72,12 +80,16 @@ public class GalleryFragment extends Fragment {
             }
         }
 
-        Log.d("image file size", String.valueOf(fileItemList.size()));
-        fileItemAdapter.setFileList(fileItemList);
+        // TextView へ反映
+        if (fileItemList.size() > 0) {
+            message = String.valueOf(fileItemList.size()) + " files found.";
+        } else {
+            message = "file not found.";
+        }
 
         // ListView へ反映
-        ListView listView = (ListView) activity.findViewById(R.id.listView);
-        listView.setAdapter(fileItemAdapter);
+        files = fileItemList;
+        ListView listView = binding.listView;
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -102,4 +114,15 @@ public class GalleryFragment extends Fragment {
         });
     }
 
+    @BindingAdapter("bind:items")
+    public static void setItems(ListView listView, ArrayList<FileItem> fileItemArrayList) {
+        FileItemAdapter adapter = new FileItemAdapter(listView.getContext());
+        adapter.setFileList(fileItemArrayList);
+        listView.setAdapter(adapter);
+    }
+
+    @BindingAdapter("bind:image")
+    public static void setImage(ImageView imageView, Bitmap bitmap) {
+        imageView.setImageBitmap(bitmap);
+    }
 }

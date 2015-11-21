@@ -15,7 +15,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -86,7 +85,19 @@ public class GalleryFragment extends Fragment {
                 ListView listView = (ListView) parent;
                 File selectedFile = (File) listView.getItemAtPosition(position);
                 Toast.makeText(activity, selectedFile.getName(), Toast.LENGTH_SHORT).show();
-                Log.d("DEBUG", selectedFile.getName());
+                Log.d("DEBUG", "tap: " + selectedFile.getName());
+            }
+        });
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                ListView listView = (ListView) parent;
+                FileItem fileItem = (FileItem) listView.getItemAtPosition(position);
+
+                Log.d("DEBUG", "long tap: " + fileItem.getName());
+
+                return true;
             }
         });
     }

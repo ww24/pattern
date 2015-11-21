@@ -8,13 +8,13 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private int defaultItemId;
     private int selectedItemId;
 
     @Override
@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity
         // NavigationView
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        selectedItemId = R.id.nav_camara;
+        defaultItemId = selectedItemId = R.id.nav_camara;
         navigationView.setCheckedItem(selectedItemId);
 
         // Fragment
@@ -54,6 +54,16 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        } else if (selectedItemId != defaultItemId) {
+            selectedItemId = defaultItemId;
+
+            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            navigationView.setCheckedItem(selectedItemId);
+            
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, new MainFragment())
+                    .commit();
         } else {
             super.onBackPressed();
         }
@@ -76,8 +86,12 @@ public class MainActivity extends AppCompatActivity
 
         switch (selectedItemId) {
             case R.id.nav_camara:
+                MainFragment fragment = new MainFragment();
+
+
+
                 fragmentManager.beginTransaction()
-                               .replace(R.id.content_frame, new MainFragment())
+                               .replace(R.id.content_frame, fragment)
                                .commit();
                 break;
             case R.id.nav_gallery:

@@ -1,10 +1,11 @@
 package jp.ww24.handwrites;
 
 import android.content.Context;
+import android.databinding.DataBindingUtil;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 
 import java.util.ArrayList;
 
@@ -13,7 +14,7 @@ import jp.ww24.handwrites.databinding.GalleryItemBinding;
 /**
  * Created by ww24 on 2015/11/12.
  */
-public class FileItemAdapter extends BaseAdapter {
+public class FileItemAdapter extends RecyclerView.Adapter<FileItemAdapter.FileItemViewHolder> {
 
     private LayoutInflater layoutInflater;
     private ArrayList<FileItem> fileItemList;
@@ -26,12 +27,16 @@ public class FileItemAdapter extends BaseAdapter {
         this.fileItemList = fileItemList;
     }
 
-    @Override
+    @Deprecated
     public int getCount() {
         return fileItemList.size();
     }
 
     @Override
+    public int getItemCount() {
+        return fileItemList.size();
+    }
+
     public Object getItem(int position) {
         return fileItemList.get(position);
     }
@@ -41,7 +46,7 @@ public class FileItemAdapter extends BaseAdapter {
         return getItem(position).hashCode();
     }
 
-    @Override
+    @Deprecated
     public View getView(int position, View convertView, ViewGroup parent) {
         GalleryItemBinding binding;
 
@@ -57,5 +62,32 @@ public class FileItemAdapter extends BaseAdapter {
         binding.setFile(file);
 
         return convertView;
+    }
+
+    @Override
+    public FileItemViewHolder onCreateViewHolder(ViewGroup container, int viewType) {
+        GalleryItemBinding binding = GalleryItemBinding.inflate(layoutInflater, container, false);
+        return new FileItemViewHolder(binding.getRoot());
+    }
+
+    @Override
+    public void onBindViewHolder(FileItemViewHolder holder, int position) {
+        FileItem fileItem = (FileItem) getItem(position);
+        holder.binding.setFile(fileItem);
+    }
+
+    public static class FileItemViewHolder extends RecyclerView.ViewHolder {
+
+        private GalleryItemBinding binding;
+
+        public FileItemViewHolder(View rootView) {
+            super(rootView);
+
+            binding = DataBindingUtil.bind(rootView);
+        }
+
+        public FileItem getFile() {
+            return binding.getFile();
+        }
     }
 }

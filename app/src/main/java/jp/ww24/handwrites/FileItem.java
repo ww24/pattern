@@ -1,14 +1,19 @@
 package jp.ww24.handwrites;
 
 import android.content.ContentResolver;
+import android.databinding.Bindable;
+import android.databinding.BindingMethod;
+import android.databinding.ObservableField;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
 import java.io.BufferedInputStream;
 import java.io.Closeable;
 import java.io.IOException;
-import java.net.URI;
 
 import java.io.File;
 import java.io.InputStream;
@@ -20,42 +25,18 @@ public class FileItem extends File implements Closeable {
     public int thumbnailSize = 400;
 
     private ContentResolver contentResolver;
-    private BitmapFactory.Options options;
+    private BitmapFactory.Options options = new BitmapFactory.Options();
     private Bitmap bitmap;
 
-    public FileItem(String path) {
-        super(path);
-
-        options = new BitmapFactory.Options();
-    }
-
-    public FileItem(URI uri) {
-        super(uri);
-
-        options = new BitmapFactory.Options();
-    }
-
-    public FileItem(String dirPath, String name) {
-        super(dirPath, name);
-
-        options = new BitmapFactory.Options();
-    }
-
-    public FileItem(File dir, String name) {
-        super(dir, name);
-
-        options = new BitmapFactory.Options();
-    }
+    public final ObservableField<Boolean> visible = new ObservableField<>(true);
 
     public FileItem(File file, ContentResolver contentResolver) {
         super(file.toURI());
 
         this.contentResolver = contentResolver;
-        this.options = new BitmapFactory.Options();
 
         InputStream inputStream = getInputStream();
 
-        BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeStream(inputStream, null, options);
         try {
@@ -68,6 +49,8 @@ public class FileItem extends File implements Closeable {
         if (scale >= 2) {
             this.options.inSampleSize = (int) scale;
         }
+
+        visible.set(true);
     }
 
     public void setContentResolver(ContentResolver contentResolver) {
@@ -121,5 +104,10 @@ public class FileItem extends File implements Closeable {
             bitmap.recycle();
             bitmap = null;
         }
+    }
+
+    public void onClick(View view) {
+        Toast.makeText(view.getContext(), this.getName(), Toast.LENGTH_SHORT).show();
+        Log.d("DEBUG", "tap: " + this.getName());
     }
 }

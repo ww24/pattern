@@ -7,15 +7,16 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.InputStream;
@@ -38,6 +39,57 @@ public class GalleryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = ContentGalleryBinding.inflate(inflater);
         binding.setGallery(this);
+
+        RecyclerView listView = binding.listView;
+        listView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(
+                new ItemTouchHelper.SimpleCallback(ItemTouchHelper.ACTION_STATE_IDLE, ItemTouchHelper.RIGHT) {
+                    @Override
+                    public boolean onMove(RecyclerView recyclerView,
+                                                   RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                        return false;
+                    }
+
+                    @Override
+                    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                        if (direction == ItemTouchHelper.RIGHT) {
+                            final FileItem file = ((FileItemAdapter.FileItemViewHolder) viewHolder).getFile();
+
+                            // delete file
+                            files.remove(file);
+
+                            // FIXME: 最後の要素の消え方がおかしい。
+                            file.visible.set(false);
+
+                            Snackbar.make(binding.getRoot(), file.getName() + " is removed.", Snackbar.LENGTH_LONG)
+                                    .setAction("UNDO", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            Log.d("DEBUG", "UNDO: " + file.getName());
+                                        }
+                                    })
+                                    .setCallback(new Snackbar.Callback() {
+                                        @Override
+                                        public void onDismissed(Snackbar snackbar, int event) {
+                                            super.onDismissed(snackbar, event);
+
+                                            if (event != Snackbar.Callback.DISMISS_EVENT_ACTION) {
+//                                                file.delete();
+                                            } else {
+                                                file.visible.set(true);
+                                            }
+                                        }
+                                    })
+                                    .show();
+                        }
+                    }
+                }
+        );
+
+        itemTouchHelper.attachToRecyclerView(listView);
+        listView.addItemDecoration(itemTouchHelper);
+
         return binding.getRoot();
     }
 
@@ -89,33 +141,10 @@ public class GalleryFragment extends Fragment {
 
         // ListView へ反映
         files = fileItemList;
-        ListView listView = binding.listView;
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ListView listView = (ListView) parent;
-                File selectedFile = (File) listView.getItemAtPosition(position);
-                Toast.makeText(activity, selectedFile.getName(), Toast.LENGTH_SHORT).show();
-                Log.d("DEBUG", "tap: " + selectedFile.getName());
-            }
-        });
-
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                ListView listView = (ListView) parent;
-                FileItem fileItem = (FileItem) listView.getItemAtPosition(position);
-
-                Log.d("DEBUG", "long tap: " + fileItem.getName());
-
-                return true;
-            }
-        });
     }
 
     @BindingAdapter("bind:items")
-    public static void setItems(ListView listView, ArrayList<FileItem> fileItemArrayList) {
+    public static void setItems(RecyclerView listView, ArrayList<FileItem> fileItemArrayList) {
         FileItemAdapter adapter = new FileItemAdapter(listView.getContext());
         adapter.setFileList(fileItemArrayList);
         listView.setAdapter(adapter);
@@ -124,5 +153,13 @@ public class GalleryFragment extends Fragment {
     @BindingAdapter("bind:image")
     public static void setImage(ImageView imageView, Bitmap bitmap) {
         imageView.setImageBitmap(bitmap);
+    }
+
+    @BindingAdapter("bind:height")
+    public static void setHeight(View view, float height) {
+        Log.d("DEBUG", "bind:height");
+        ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+        layoutParams.height = (int)height;
+        view.setLayoutParams(layoutParams);
     }
 }

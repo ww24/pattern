@@ -9,7 +9,9 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp">
+        android:layout_height="@dimen/gallery_list_item_height"
+        bind:height="@{file.visible ? @dimen/gallery_list_item_height : 0}"
+        android:onClick="@{file.onClick}">
 
         <jp.ww24.handwrites.SquareView
             android:layout_width="match_parent"

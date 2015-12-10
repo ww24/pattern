@@ -14,8 +14,9 @@ import android.view.TextureView;
  * Created by ww24 on 2015/11/05.
  */
 public class DrawView extends TextureView implements TextureView.SurfaceTextureListener {
-    private Path mPath;
+    private Path mPath = new Path();
     private Paint mPaint;
+    private int mBaseColor = Color.BLACK;
     private float mX, mY;
 
     public DrawView(Context context) {
@@ -30,33 +31,31 @@ public class DrawView extends TextureView implements TextureView.SurfaceTextureL
         super(context, attrs, defStyle);
 
         setFocusable(true);
-        setBackgroundColor(Color.WHITE);
+        setBackgroundColor(mBaseColor);
         setSurfaceTextureListener(this);
+
+        mPaint = new Paint(0);
+        // 線の色を指定
+        mPaint.setColor(Color.WHITE);
+        // 線の幅を指定
+        mPaint.setStrokeWidth(5.0f);
+        // 輪郭線を描画するスタイル
+        mPaint.setStyle(Paint.Style.STROKE);
+        // 線の繋目を丸く
+        mPaint.setStrokeJoin(Paint.Join.ROUND);
+        // 線の端を丸く
+        mPaint.setStrokeCap(Paint.Cap.ROUND);
     }
 
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
-        if (mPath == null) {
-            mPath = new Path();
-            mPaint = new Paint();
-            // 線の色を指定
-            mPaint.setColor(Color.BLACK);
-            // 線の幅を指定
-            mPaint.setStrokeWidth(5.0f);
-            // 輪郭線を描画するスタイル
-            mPaint.setStyle(Paint.Style.STROKE);
-            // 線の繋目を丸く
-            mPaint.setStrokeJoin(Paint.Join.ROUND);
-            // 線の端を丸く
-            mPaint.setStrokeCap(Paint.Cap.ROUND);
-        } else {
-            // 復帰時の再描画
-            Canvas canvas = lockCanvas();
-            if (canvas != null) {
-                canvas.drawColor(Color.WHITE);
-                canvas.drawPath(mPath, mPaint);
-                unlockCanvasAndPost(canvas);
-            }
+        // 復帰時の再描画
+        Canvas canvas = lockCanvas();
+        if (canvas != null) {
+            canvas.drawColor(mBaseColor);
+            canvas.drawPath(mPath, mPaint);
+            initializeCanvas(canvas);
+            unlockCanvasAndPost(canvas);
         }
     }
 
@@ -94,8 +93,9 @@ public class DrawView extends TextureView implements TextureView.SurfaceTextureL
 
         Canvas canvas = lockCanvas();
         if (canvas != null) {
-            canvas.drawColor(Color.WHITE);
+            canvas.drawColor(mBaseColor);
             canvas.drawPath(mPath, mPaint);
+            initializeCanvas(canvas);
             unlockCanvasAndPost(canvas);
         }
 
@@ -107,8 +107,28 @@ public class DrawView extends TextureView implements TextureView.SurfaceTextureL
 
         Canvas canvas = lockCanvas();
         if (canvas != null) {
-            canvas.drawColor(Color.WHITE);
+            canvas.drawColor(mBaseColor);
+            initializeCanvas(canvas);
             unlockCanvasAndPost(canvas);
+        }
+    }
+
+    private void initializeCanvas(Canvas canvas) {
+        Paint paint = new Paint(mPaint);
+        // 線の幅を指定
+        paint.setStrokeWidth(40.0f);
+        // 線の色を指定
+        paint.setColor(Color.WHITE);
+        // アンチエイリアスの設定
+        paint.setAntiAlias(true);
+
+        double wd = getWidth() / 3.0f;
+        double hd = getHeight() / 3.0f;
+
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                canvas.drawCircle((int)(i * wd + wd/2), (int)(j * hd + hd/2), 20.0f, paint);
+            }
         }
     }
 }

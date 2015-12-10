@@ -12,12 +12,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.alexbbb.uploadservice.MultipartUploadRequest;
+import com.alexbbb.uploadservice.UploadNotificationConfig;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.UUID;
 
 import jp.ww24.handwrites.databinding.ContentMainBinding;
 
@@ -50,8 +55,22 @@ public class MainFragment extends Fragment {
                 drawView.clear();
 
                 try {
-                    saveBitmapImage(drawView.getBitmap());
+                    final String filepath = saveBitmapImage(drawView.getBitmap());
+
+                    // upload image
+                    final String uploadID = UUID.randomUUID().toString();
+                    new MultipartUploadRequest(getContext(), uploadID, "https://kis.appcloud.info/api/")
+                            .addFileToUpload(filepath, "image")
+                            .setNotificationConfig(new UploadNotificationConfig())
+                            .setMaxRetries(3)
+                            .startUpload();
                 } catch (FileNotFoundException e) {
+                    Log.e("Error", e.toString());
+
+                    Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG)
+                            .setAction("Action", null)
+                            .show();
+                } catch (MalformedURLException e) {
                     Log.e("Error", e.toString());
 
                     Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG)
@@ -64,7 +83,7 @@ public class MainFragment extends Fragment {
         });
     }
 
-    public void saveBitmapImage(Bitmap bitmap) throws FileNotFoundException {
+    public String saveBitmapImage(Bitmap bitmap) throws FileNotFoundException {
         final Activity activity = getActivity();
 
         String dateStr = new SimpleDateFormat("yyyymmdd_HHmm:ss", Locale.JAPAN).format(new Date());
@@ -72,5 +91,7 @@ public class MainFragment extends Fragment {
         File file = new File(cacheDir, dateStr + ".png");
         FileOutputStream fos = new FileOutputStream(file);
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+
+        return file.getPath();
     }
 }

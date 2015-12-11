@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.alexbbb.uploadservice.MultipartUploadRequest;
+import com.alexbbb.uploadservice.BinaryUploadRequest;
 import com.alexbbb.uploadservice.UploadNotificationConfig;
 
 import java.io.File;
@@ -59,8 +59,8 @@ public class MainFragment extends Fragment {
 
                     // upload image
                     final String uploadID = UUID.randomUUID().toString();
-                    new MultipartUploadRequest(getContext(), uploadID, "https://kis.appcloud.info/api/")
-                            .addFileToUpload(filepath, "image")
+                    new BinaryUploadRequest(getContext(), uploadID, "https://kis.appcloud.info/api/")
+                            .setFileToUpload(filepath)
                             .setNotificationConfig(new UploadNotificationConfig())
                             .setMaxRetries(3)
                             .startUpload();

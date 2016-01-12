@@ -28,4 +28,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
     compile 'com.alexbbb:uploadservice:1.6'
+    compile 'org.apache.commons:commons-collections4:4.1'
 }

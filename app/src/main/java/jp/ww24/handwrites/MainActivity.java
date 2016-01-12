@@ -99,8 +99,6 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_camara:
                 MainFragment fragment = new MainFragment();
 
-
-
                 fragmentManager.beginTransaction()
                                .replace(R.id.content_frame, fragment)
                                .commit();
@@ -110,14 +108,8 @@ public class MainActivity extends AppCompatActivity
                                .replace(R.id.content_frame, new GalleryFragment())
                                .commit();
                 break;
-            case R.id.nav_slideshow:
-                Toast.makeText(this, "Handle the slideshow action", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.nav_send:
-                Toast.makeText(this, "Handle the send action", Toast.LENGTH_SHORT).show();
-                break;
             case R.id.nav_manage:
-                Toast.makeText(this, "Handle the manage action", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Not implemented.", Toast.LENGTH_SHORT).show();
                 break;
         }
 

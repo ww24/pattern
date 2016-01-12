@@ -246,6 +246,14 @@ public class DrawView extends TextureView implements TextureView.SurfaceTextureL
         // 線の幅を指定
         paint.setStrokeWidth(40.0f);
 
+        // Draw red pattern lines
+        if (pattern != null) {
+            paint = new Paint(mPaint);
+            paint.setColor(Color.argb(0x80, 0xff, 0, 0));
+            paint.setStrokeWidth(30.0f);
+            drawPattern(canvas, pattern, paint);
+        }
+
         // Pattern marker の描画
         for (int i = 0; i < mPositions.length; i++) {
             int[] pos = (int[])mPositions[i];
@@ -259,13 +267,7 @@ public class DrawView extends TextureView implements TextureView.SurfaceTextureL
             canvas.drawCircle(pos[0], pos[1], 20.0f, paint);
         }
 
-        if (pattern != null) {
-            paint = new Paint(mPaint);
-            paint.setColor(Color.argb(0x80, 0xff, 0, 0));
-            paint.setStrokeWidth(30.0f);
-            drawPattern(canvas, pattern, paint);
-        }
-
+        // Draw blue stroke lines
         if (mStroke.size() > 1) {
             pattern = mStroke.toArray(new Integer[0]);
             paint = new Paint(mPaint);

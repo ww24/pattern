@@ -1,6 +1,8 @@
 package jp.ww24.handwrites;
 
+import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -14,6 +16,8 @@ import android.widget.Toast;
 
 import com.alexbbb.uploadservice.UploadService;
 
+import java.util.UUID;
+
 import jp.ww24.handwrites.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity
@@ -24,12 +28,24 @@ public class MainActivity extends AppCompatActivity
 
     private ActivityMainBinding binding;
 
+    public static String uniqueID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Data binding
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+
+        // Generate or Get UniqueID
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        uniqueID = sharedPreferences.getString("UNIQUE_ID", null);
+        if (uniqueID == null) {
+            uniqueID = UUID.randomUUID().toString();
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("UNIQUE_ID", uniqueID);
+            editor.apply();
+        }
 
         // Upload Service
         UploadService.NAMESPACE = BuildConfig.APPLICATION_ID;

@@ -13,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.alexbbb.uploadservice.UploadService;
 
@@ -127,7 +126,9 @@ public class MainActivity extends AppCompatActivity
                                .commit();
                 break;
             case R.id.nav_manage:
-                Toast.makeText(this, "Not implemented.", Toast.LENGTH_SHORT).show();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.content_frame, new SettingFragment())
+                        .commit();
                 break;
         }
 

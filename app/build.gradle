@@ -8,8 +8,8 @@ android {
         applicationId "jp.ww24.handwrites"
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1"
     }
     buildTypes {
         release {
@@ -29,4 +29,5 @@ dependencies {
     compile 'com.android.support:design:23.1.1'
     compile 'com.alexbbb:uploadservice:1.6'
     compile 'org.apache.commons:commons-collections4:4.1'
+    compile 'com.google.code.gson:gson:2.5'
 }

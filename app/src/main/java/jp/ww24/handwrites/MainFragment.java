@@ -18,6 +18,9 @@ public class MainFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = ContentMainBinding.inflate(inflater);
+
+        binding.drawView.passBinding(binding);
+
         return binding.getRoot();
     }
 

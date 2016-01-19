@@ -43,6 +43,24 @@
                     android:layout_alignEnd="@+id/textView2" />
 
             </jp.ww24.handwrites.SquareView>
+
+            <TextView
+                android:text=""
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/view"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:id="@+id/counter" />
+            <TextView
+                android:text="@string/message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/counter"
+                android:gravity="center"
+                android:textSize="16sp"
+                android:id="@+id/message" />
+
         </RelativeLayout>
 
     </RelativeLayout>

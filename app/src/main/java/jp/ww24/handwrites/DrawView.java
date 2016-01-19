@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.TextureView;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alexbbb.uploadservice.MultipartUploadRequest;
@@ -34,13 +35,15 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
+import jp.ww24.handwrites.databinding.ContentMainBinding;
+
 /**
  * Created by ww24 on 2015/11/05.
  */
 public class DrawView extends TextureView implements TextureView.SurfaceTextureListener {
     private Path mPath = new Path();
     private Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private Pattern mP = new Pattern();
+    private Pattern mP = new Pattern(getContext());
     private List<Integer> mPattern = mP.getPattern();
     private List<Integer> mStroke = new ArrayList<>();
     private int mBaseColor = Color.BLACK;
@@ -52,6 +55,8 @@ public class DrawView extends TextureView implements TextureView.SurfaceTextureL
 
     private boolean mUploadFlag = false;
     private float mPixelRate;
+
+    private ContentMainBinding binding;
 
     public DrawView(Context context) {
         this(context, null);
@@ -80,6 +85,10 @@ public class DrawView extends TextureView implements TextureView.SurfaceTextureL
         mPaint.setStrokeCap(Paint.Cap.ROUND);
     }
 
+    public void passBinding(ContentMainBinding binding) {
+        this.binding = binding;
+    }
+
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
         mPixelRate = getWidth() / 512.0f;
@@ -106,6 +115,10 @@ public class DrawView extends TextureView implements TextureView.SurfaceTextureL
             }
             unlockCanvasAndPost(canvas);
         }
+
+        if (binding != null) {
+            binding.counter.setText(String.format("進捗: %d/100\n", mP.getIndex()));
+        }
     }
 
     @Override
@@ -122,6 +135,8 @@ public class DrawView extends TextureView implements TextureView.SurfaceTextureL
         if (mUploadFlag) {
             mUploadFlag = false;
             uploadBitmap();
+            // update saved config data
+            mP.update();
 
             // 初期化
             Canvas canvas = lockCanvas();
@@ -129,6 +144,10 @@ public class DrawView extends TextureView implements TextureView.SurfaceTextureL
                 mPattern = mP.getPattern();
                 initializeCanvas(canvas, mPattern);
                 unlockCanvasAndPost(canvas);
+            }
+
+            if (binding != null) {
+                binding.counter.setText(String.format("進捗: %d/100\n", mP.getIndex()));
             }
         }
     }
@@ -307,10 +326,12 @@ public class DrawView extends TextureView implements TextureView.SurfaceTextureL
             paint.setStrokeWidth(24.0f * mPixelRate);
             canvas.drawCircle(pos[0], pos[1], 12.0f * mPixelRate, paint);
 
-            if (paint.getColor() != mDrawColor) {
-                Integer num = mPattern.indexOf(i + 1) + 1;
+            // 描画順の指示
+            Integer index = mPattern.indexOf(i + 1);
+            if (index >= 0) {
+                index += 1;
                 float y = pos[1] - (fontMetrics.top - fontMetrics.bottom) / 3;
-                canvas.drawText(num.toString(), pos[0], y, textPaint);
+                canvas.drawText(index.toString(), pos[0], y, textPaint);
             }
         }
 

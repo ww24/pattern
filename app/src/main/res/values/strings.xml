@@ -13,4 +13,7 @@
     <string name="menu_settings">Settings</string>
     <string name="menu_title">Menu</string>
     <string name="message">100全て実施する必要はありませんが、できるだけ多くご協力頂けると幸いです。</string>
+    <string name="thanks_description">100パターンご協力いただき、ありがとうございました。\n研究に活用させていただきます。</string>
+    <string name="thanks_title">ありがとうございました</string>
+    <string name="ok">OK</string>
 </resources>

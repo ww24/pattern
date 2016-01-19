@@ -72,6 +72,7 @@ public class FileItem extends File implements Closeable {
 
     public Bitmap getThumbnailBitmap() {
         InputStream inputStream = getInputStream();
+        options.inJustDecodeBounds = false;
         bitmap = BitmapFactory.decodeStream(inputStream, null, options);
         try {
             inputStream.close();

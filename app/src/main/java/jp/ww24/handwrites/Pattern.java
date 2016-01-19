@@ -14,7 +14,7 @@ import java.util.List;
  * Created by ww24 on 2016/01/19.
  */
 public class Pattern {
-    private Config mConfig = new Config();
+    private Config mConfig;
     private Context mContext;
     private Gson mGson = new Gson();
     private static String[] patterns = {
@@ -133,6 +133,8 @@ public class Pattern {
     }
 
     private void init() {
+        mConfig = new Config();
+
         for (String pattern: patterns) {
             List<Integer> list = new ArrayList<>();
             mConfig.mPatternList.add(list);
@@ -143,7 +145,6 @@ public class Pattern {
         }
 
         Collections.shuffle(mConfig.mPatternList);
-        mConfig.mIndex = 0;
 
         update();
     }
@@ -157,11 +158,10 @@ public class Pattern {
     }
 
     public List<Integer> getPattern() {
-        int index = mConfig.mIndex++;
-        if (index >= mConfig.mPatternList.size()) {
+        if (mConfig.mIndex >= mConfig.mPatternList.size()) {
             init();
         }
-        return mConfig.mPatternList.get(index);
+        return mConfig.mPatternList.get(mConfig.mIndex++);
     }
 
     public int getIndex() {

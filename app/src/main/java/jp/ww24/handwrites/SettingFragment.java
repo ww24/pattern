@@ -33,6 +33,7 @@ public class SettingFragment extends Fragment {
             e.printStackTrace();
         }
         binding.version.setText("Version: " + versionName);
+        binding.uniqueID.setText("UUID: " + MainActivity.uniqueID);
 
         return binding.getRoot();
     }

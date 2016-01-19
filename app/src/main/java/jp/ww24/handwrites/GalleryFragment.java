@@ -87,8 +87,9 @@ public class GalleryFragment extends Fragment {
                 }
         );
 
-        itemTouchHelper.attachToRecyclerView(listView);
-        listView.addItemDecoration(itemTouchHelper);
+        // FIXME: 動作が不安定なので swipe action を無効化
+//        itemTouchHelper.attachToRecyclerView(listView);
+//        listView.addItemDecoration(itemTouchHelper);
 
         return binding.getRoot();
     }
@@ -157,7 +158,6 @@ public class GalleryFragment extends Fragment {
 
     @BindingAdapter("bind:height")
     public static void setHeight(View view, float height) {
-        Log.d("DEBUG", "bind:height");
         ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
         layoutParams.height = (int)height;
         view.setLayoutParams(layoutParams);

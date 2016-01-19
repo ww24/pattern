@@ -1,5 +1,6 @@
 package jp.ww24.handwrites;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -146,7 +147,17 @@ public class DrawView extends TextureView implements TextureView.SurfaceTextureL
             }
 
             if (binding != null) {
-                binding.counter.setText(String.format("進捗: %d/100\n", mP.getIndex()));
+                int index = mP.getIndex();
+                binding.counter.setText(String.format("進捗: %d/100\n", index));
+
+                // thanks message の表示
+                if (index == 1) {
+                    new AlertDialog.Builder(getContext())
+                            .setTitle(R.string.thanks_title)
+                            .setMessage(R.string.thanks_description)
+                            .setPositiveButton(R.string.ok, null)
+                            .show();
+                }
             }
         }
     }

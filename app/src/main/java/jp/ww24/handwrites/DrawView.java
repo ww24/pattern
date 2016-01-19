@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.TextureView;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alexbbb.uploadservice.MultipartUploadRequest;
@@ -372,7 +371,6 @@ public class DrawView extends TextureView implements TextureView.SurfaceTextureL
                     .addFileToUpload(filepath, "image")
                     .addHeader("Authorization", MainActivity.uniqueID)
                     .addParameter("metadata", json)
-//                    .setNotificationConfig(new UploadNotificationConfig())
                     .setMaxRetries(3)
                     .startUpload();
 

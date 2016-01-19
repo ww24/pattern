@@ -1,8 +1,6 @@
 package jp.ww24.handwrites;
 
 import android.content.ContentResolver;
-import android.databinding.Bindable;
-import android.databinding.BindingMethod;
 import android.databinding.ObservableField;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

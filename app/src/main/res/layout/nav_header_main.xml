@@ -13,15 +13,4 @@
         android:paddingTop="@dimen/nav_header_vertical_spacing" android:text="@string/menu_title"
         android:textAppearance="@style/TextAppearance.AppCompat.Menu" />
 
-    <!--<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"-->
-        <!--android:paddingTop="@dimen/nav_header_vertical_spacing"-->
-        <!--android:src="@android:drawable/sym_def_app_icon" android:id="@+id/imageView" />-->
-
-    <!--<TextView android:layout_width="match_parent" android:layout_height="wrap_content"-->
-        <!--android:paddingTop="@dimen/nav_header_vertical_spacing" android:text="Guest"-->
-        <!--android:textAppearance="@style/TextAppearance.AppCompat.Body1" />-->
-
-    <!--<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"-->
-        <!--android:text="android@example.com" android:id="@+id/textView" />-->
-
 </LinearLayout>
